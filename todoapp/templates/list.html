@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'styles_updated.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+</head>
+<body class="dark_body">
+    <div class="toggle-container">
+        <button id="mode-toggle">
+            <span class="material-symbols-outlined dark">dark_mode</span>
+            <span class="material-symbols-outlined light">light_mode</span>
+        </button>
+      </div>
+    <h1>To do </h1>
+    <div class="all">
+        <form action="/" method="POST">
+            {% csrf_token %}
+            {{form.title}}
+            <input type="submit" value="Add a Task">
+        </form>
+
+        <div class="tasks">
+            {% for task in tasks  %}
+                <div class="task">
+                    {% if task.complete  %}
+                        <strike>{{task}}</strike> <!-- make a finished task as striked -->
+                    {% else %}
+                        <span>{{task}}</span>
+                    {% endif %}
+                    <div class="button">
+                        <button><a href="{% url 'update' task.id %}">Update</a></button>
+                        <button><a href="{% url 'delete' task.id %}">Delete</a></button>
+                    </div>
+
+                </div>
+            {% endfor %}         
+        </div>        
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        const body = document.body;
+        const modeToggle = document.getElementById('mode-toggle');
+
+        // Check the initial mode preference (light or dark) using local storage
+        const currentMode = localStorage.getItem('mode') || 'light';
+        setMode(currentMode);
+
+        // Toggle between light and dark modes
+        modeToggle.addEventListener('click', function() {
+            const newMode = body.classList.contains('dark_body') ? 'light' : 'dark';
+            setMode(newMode);
+            localStorage.setItem('mode', newMode);
+        });
+
+        // Function to set the mode
+        function setMode(mode) {
+            if (mode === 'dark') {
+            body.classList.add('dark_body');
+            } else {
+            body.classList.remove('dark_body');
+            }
+        }
+        });
+    </script>
+</body>
+</html>
+
+
